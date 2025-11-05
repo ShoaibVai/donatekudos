@@ -1,52 +1,190 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# DonateKudos - Authentication System with TOTP
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A complete authentication system built with Laravel featuring user registration, login, and forgot password functionality with TOTP (Time-based One-Time Password) verification.
 
-## About Laravel
+## 🎯 Quick Overview
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- ✅ User Registration with validation
+- ✅ User Login with "Remember Me"
+- ✅ Forgot Password with TOTP verification
+- ✅ Database sessions
+- ✅ CSRF protection
+- ✅ Bcrypt password hashing
+- ✅ SQLite (dev) / PostgreSQL Supabase (prod)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Quick Start
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```bash
+cd d:\Documents\Projects\donatekudos\laravel
 
-## Learning Laravel
+# Install dependencies
+composer install
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+# Generate key
+php artisan key:generate
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+# Run migrations
+php artisan migrate
 
-## Laravel Sponsors
+# Start server
+php artisan serve
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Access at: **http://127.0.0.1:8000**
 
-### Premium Partners
+## 📚 Documentation
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+| Document | Purpose |
+|----------|---------|
+| **QUICKSTART.md** | Get started quickly |
+| **AUTHENTICATION.md** | Complete feature documentation |
+| **API_DOCUMENTATION.md** | Endpoint reference |
+| **SUPABASE_SETUP.md** | PostgreSQL/Supabase setup |
+| **TESTING_CHECKLIST.md** | Testing guide |
+| **COMMANDS_REFERENCE.md** | Artisan commands |
 
-## Contributing
+## 🔗 Key Routes
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Public
+- `GET /` - Home
+- `GET /signup` - Sign up form
+- `POST /signup` - Register
+- `GET /login` - Login form
+- `POST /login` - Authenticate
+- `GET /forgot-password` - Reset request
+- `POST /forgot-password` - Start reset
+- `GET /verify-totp-forgot` - TOTP verification
+- `POST /verify-totp-forgot` - Verify code
+- `GET /reset-password` - New password form
+- `POST /reset-password` - Update password
 
-## Code of Conduct
+### Protected
+- `GET /dashboard` - User dashboard
+- `POST /logout` - Sign out
+
+## 🔐 Features
+
+### Sign Up
+- Email validation
+- Unique email check
+- Password confirmation
+- Auto-login after signup
+
+### Login
+- Credential authentication
+- Remember me option
+- Session management
+
+### Forgot Password
+- Email verification
+- TOTP secret generation
+- Code validation
+- Secure password reset
+
+### Security
+- Bcrypt hashing (12 rounds)
+- TOTP 2FA
+- CSRF protection
+- SQL injection prevention
+- XSS protection
+
+## 🛠️ Tech Stack
+
+- **Laravel 11** - Web framework
+- **PHP 8.2+** - Language
+- **SQLite** - Dev database
+- **PostgreSQL** - Production (Supabase)
+- **Blade** - Templating
+- **Tailwind CSS** - Styling
+- **OTPHP** - TOTP library
+
+## 📦 Installation
+
+### Prerequisites
+- PHP 8.2+
+- Composer
+- SQLite (built-in)
+
+### Setup
+
+1. Install deps: `composer install`
+2. Generate key: `php artisan key:generate`
+3. Migrate: `php artisan migrate`
+4. Serve: `php artisan serve`
+
+## 🧪 Quick Test
+
+1. Go to `/signup` and create account
+2. Go to `/login` and sign in
+3. Go to `/forgot-password` to test TOTP reset
+4. Use authenticator app (Google Authenticator, Authy)
+
+## ⚙️ Configuration
+
+### Switch to PostgreSQL
+
+1. Install PHP PostgreSQL driver
+2. Update `.env`:
+```env
+DB_CONNECTION=pgsql
+DB_HOST=db.idfjadtzqobtucxqkcuy.supabase.co
+DB_PORT=5432
+DB_DATABASE=postgres
+DB_USERNAME=postgres
+DB_PASSWORD=your_password
+```
+3. Run: `php artisan migrate`
+
+See **SUPABASE_SETUP.md** for details.
+
+## 📖 Usage
+
+### Create Account
+```
+/signup → Enter details → Auto-logged in → Dashboard
+```
+
+### Login
+```
+/login → Enter email/password → Dashboard
+```
+
+### Reset Password
+```
+/forgot-password → Email verification → TOTP code → New password → Login
+```
+
+## 🐛 Troubleshooting
+
+Clear cache:
+```bash
+php artisan cache:clear && php artisan config:clear
+```
+
+Fresh database:
+```bash
+php artisan migrate:fresh
+```
+
+## 📞 Support
+
+- See **QUICKSTART.md** for quick reference
+- See **TESTING_CHECKLIST.md** for testing
+- See **COMMANDS_REFERENCE.md** for commands
+- Check Laravel docs: https://laravel.com/docs
+
+## ✅ Status
+
+- ✅ Authentication implemented
+- ✅ TOTP integrated
+- ✅ Database configured
+- ✅ All routes working
+- ✅ Documentation complete
+- ✅ Ready for testing & deployment
+
+**Last Updated**: November 4, 2025
+
+For more information, see the detailed documentation files included in the project.
 
 In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
