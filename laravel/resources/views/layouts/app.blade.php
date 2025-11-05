@@ -12,7 +12,7 @@
         <script src="https://cdn.tailwindcss.com"></script>
     @endif
 </head>
-<body class="bg-gray-50">
+<body class="min-h-screen antialiased @yield('body-class', 'bg-gray-50 text-gray-900')">
     @if (session('status'))
         <div class="fixed top-4 right-4 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-md">
             {{ session('status') }}
