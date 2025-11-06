@@ -1,50 +1,63 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\GalleryController;
-use App\Http\Controllers\TwoFactorController;
-use App\Http\Controllers\Admin\AuthController as AdminAuthController;
-use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
-use App\Http\Controllers\Admin\UserController as AdminUserController;
-use App\Http\Controllers\Admin\ExportController;
+use App\Http\Controllers\AdminController;
 
-// Public routes
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::get('/profile/{username}', [ProfileController::class, 'show'])->name('profile.show');
+// Authentication Routes
+Route::prefix('auth')->group(function () {
+    // Registration
+    Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+    Route::post('register', [RegisterController::class, 'register']);
+    Route::get('totp-setup', [RegisterController::class, 'showTotpSetup'])->name('auth.totp-setup');
+    Route::post('totp-confirm', [RegisterController::class, 'confirmTotp'])->name('auth.totp-confirm');
 
-// Authentication routes (using Supabase)
-Route::middleware('auth')->group(function () {
-    // Profile routes
-    Route::get('/dashboard', [ProfileController::class, 'dashboard'])->name('profile.dashboard');
-    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-    Route::post('/profile/delete', [ProfileController::class, 'destroy'])->name('profile.delete');
+    // Login
+    Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('login', [LoginController::class, 'login']);
+    Route::get('verify-totp', [LoginController::class, 'showTotpVerification'])->name('auth.verify-totp');
+    Route::post('verify-totp', [LoginController::class, 'verifyTotp']);
+    Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
-    // Gallery routes
-    Route::get('/profile/gallery', [GalleryController::class, 'manage'])->name('gallery.manage');
-    Route::post('/gallery/upload', [GalleryController::class, 'upload'])->name('gallery.upload');
-    Route::delete('/gallery/{id}', [GalleryController::class, 'destroy'])->name('gallery.delete');
-
-    // 2FA routes
-    Route::post('/2fa/enable', [TwoFactorController::class, 'enable'])->name('2fa.enable');
-    Route::post('/2fa/verify', [TwoFactorController::class, 'verify'])->name('2fa.verify');
-    Route::post('/2fa/disable', [TwoFactorController::class, 'disable'])->name('2fa.disable');
+    // Password Reset
+    Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+    Route::post('password/reset', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+    Route::get('password/reset/form', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset.form');
+    Route::post('password/reset/confirm', [ForgotPasswordController::class, 'reset'])->name('password.reset.confirm');
+    Route::get('password/reset/done', [ForgotPasswordController::class, 'showResetDone'])->name('password.reset.done');
 });
 
-// Admin routes
-Route::prefix('admin')->group(function () {
-    Route::get('/', [AdminAuthController::class, 'showLoginForm'])->name('admin.login.form');
-    Route::post('/', [AdminAuthController::class, 'login'])->name('admin.login');
-    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
-
-    Route::middleware('admin')->group(function () {
-        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-        Route::get('/users', [AdminUserController::class, 'index'])->name('admin.users.index');
-        Route::get('/users/{id}', [AdminUserController::class, 'show'])->name('admin.users.show');
-        Route::get('/export/xml', [ExportController::class, 'xml'])->name('admin.export.xml');
+// Profile Routes
+Route::middleware('auth')->group(function () {
+    Route::prefix('profile')->group(function () {
+        Route::get('/', [ProfileController::class, 'index'])->name('profile.index');
+        Route::get('edit', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/', [ProfileController::class, 'destroy'])->name('profile.destroy');
     });
 });
+
+// Public Profile Routes
+Route::get('profile/{username}', [ProfileController::class, 'show'])->name('profile.show');
+
+// Admin Routes
+Route::prefix('admin')->group(function () {
+    Route::get('/', [AdminController::class, 'showLoginForm'])->name('admin.login');
+    Route::post('login', [AdminController::class, 'login'])->name('admin.login.post');
+    
+    Route::middleware('auth:admin')->group(function () {
+        Route::get('dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+        Route::get('users', [AdminController::class, 'users'])->name('admin.users');
+        Route::get('users/{user}/export/xml', [AdminController::class, 'exportUserXml'])->name('admin.export-xml');
+        Route::get('deleted-users', [AdminController::class, 'deletedUsers'])->name('admin.deleted-users');
+        Route::post('logout', [AdminController::class, 'logout'])->name('admin.logout');
+    });
+});
+

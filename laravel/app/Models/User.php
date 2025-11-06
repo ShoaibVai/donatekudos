@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'totp_secret',
     ];
 
     /**
@@ -31,6 +32,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'totp_secret',
     ];
 
     /**
@@ -44,5 +46,21 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the user's profile.
+     */
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
+
+    /**
+     * Get the user's gallery images.
+     */
+    public function galleries()
+    {
+        return $this->hasMany(Gallery::class);
     }
 }

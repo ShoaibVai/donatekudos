@@ -1,207 +1,59 @@
-# 🎉 Laravel Supabase Profile Manager
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-> A complete, production-ready Laravel 10.x application for managing user profiles with TOTP authentication, gallery system, and admin panel. Fully integrated with Supabase.
+<p align="center">
+<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+</p>
 
-## ✨ Features
+## About Laravel
 
-✅ **User Profiles** - Create, edit, and delete profiles with JSONB data storage  
-✅ **Image Gallery** - Upload and manage images via Supabase Storage  
-✅ **2FA/TOTP** - Two-factor authentication with TOTP secrets  
-✅ **Admin Panel** - User management, statistics, and XML export  
-✅ **Public Profiles** - Shareable profile pages and JSON API  
-✅ **Data Archival** - 30-day retention on profile deletion  
-✅ **Security** - CSRF, XSS, SQL injection protection  
-✅ **Tests** - Comprehensive unit tests included  
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-## 🚀 Quick Start
+- [Simple, fast routing engine](https://laravel.com/docs/routing).
+- [Powerful dependency injection container](https://laravel.com/docs/container).
+- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+- [Robust background job processing](https://laravel.com/docs/queues).
+- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-```bash
-# Install dependencies
-composer install && npm install
+Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-# Setup environment
-php artisan key:generate
+## Learning Laravel
 
-# Run migrations
-php artisan migrate
+Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
 
-# Start development
-php artisan serve
-```
+If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-Visit: `http://localhost:8000`
+## Laravel Sponsors
 
-**Admin**: `/admin` | Password: `Rishbish$$`
+We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
 
-## 📚 Documentation
+### Premium Partners
 
-| Document | Purpose |
-|----------|---------|
-| **[QUICKSTART.md](./QUICKSTART.md)** | 5-minute setup guide |
-| **[PROJECT_SETUP.md](./PROJECT_SETUP.md)** | Complete installation & features |
-| **[CONFIG_GUIDE.md](./CONFIG_GUIDE.md)** | Production configuration & deployment |
-| **[IMPLEMENTATION_CHECKLIST.md](./IMPLEMENTATION_CHECKLIST.md)** | Status & roadmap |
-| **[PROJECT_SUMMARY.md](./PROJECT_SUMMARY.md)** | Project overview |
-| **[DELIVERY_SUMMARY.md](./DELIVERY_SUMMARY.md)** | What was delivered |
+- **[Vehikl](https://vehikl.com)**
+- **[Tighten Co.](https://tighten.co)**
+- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+- **[64 Robots](https://64robots.com)**
+- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
+- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
+- **[Redberry](https://redberry.international/laravel-development)**
+- **[Active Logic](https://activelogic.com)**
 
-## 🏗️ Architecture
+## Contributing
 
-### Models (4)
-- `Profile` - User profiles with contact info & wallet addresses
-- `Gallery` - Image storage with cascade delete
-- `ArchivedProfile` - Profile snapshots (30-day retention)
-- `RecoveryToken` - TOTP secret management
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-### Controllers (8)
-- `ProfileController` - Profile CRUD
-- `GalleryController` - Image management
-- `TwoFactorController` - 2FA setup
-- `Admin/*` - Admin operations
-- `Api\ProfileController` - JSON API
+## Code of Conduct
 
-### Routes (20+)
-- Public: home, profile display, API
-- Auth: dashboard, profile management, gallery, 2FA
-- Admin: login, dashboard, users, export
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-### Views (11)
-- Layouts, profiles, gallery, admin, home
+## Security Vulnerabilities
 
-## 🗄️ Database Schema
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-```
-profiles (UUID, user_id, username, contact_info JSONB, wallet_addresses JSONB)
-galleries (UUID, profile_id, image_url, filename)
-archived_profiles (UUID, original_profile_id, user_data JSONB, deleted_at)
-recovery_tokens (UUID, user_id, token, is_enabled, is_verified)
-```
+## License
 
-## 🧪 Testing
-
-```bash
-# Run all tests
-php artisan test
-
-# Run specific test
-php artisan test tests/Unit/ProfileCreationTest
-```
-
-Tests included:
-- Profile creation & validation
-- Gallery relationships
-- Profile archival
-- TOTP token management
-
-## 🔐 Security
-
-✅ CSRF protection  
-✅ XSS prevention  
-✅ SQL injection protection (Eloquent)  
-✅ Password hashing (bcrypt)  
-✅ Secure session handling  
-✅ TOTP secrets hidden  
-✅ Cascade deletion  
-✅ Foreign key constraints  
-
-## 📊 Project Stats
-
-| Metric | Count |
-|--------|-------|
-| Models | 4 |
-| Controllers | 8 |
-| Routes | 20+ |
-| Views | 11 |
-| Migrations | 4 |
-| Tests | 4 classes, 15+ tests |
-| Documentation Pages | 6 |
-| Lines of Code | 3,000+ |
-
-## 🛠️ Tech Stack
-
-- **Backend**: Laravel 10.x
-- **Database**: PostgreSQL (Supabase)
-- **Auth**: Supabase Authentication
-- **Storage**: Supabase Storage
-- **Frontend**: Blade + Tailwind CSS
-- **Testing**: PHPUnit
-
-## 📋 API Endpoints
-
-### Public
-```
-GET /                           # Home
-GET /profile/{username}         # Profile page
-GET /api/profile/{username}     # JSON API
-```
-
-### Authenticated
-```
-GET /dashboard                  # Dashboard
-GET /profile/edit               # Edit form
-POST /profile/update            # Save
-GET /profile/gallery            # Gallery
-POST /gallery/upload            # Upload
-DELETE /gallery/{id}            # Delete
-POST /2fa/enable                # Enable 2FA
-```
-
-### Admin
-```
-GET /admin                      # Login
-GET /admin/dashboard            # Dashboard
-GET /admin/users                # Users
-GET /admin/export/xml           # Export
-```
-
-## 🚀 Deployment
-
-See **[CONFIG_GUIDE.md](./CONFIG_GUIDE.md)** for production setup.
-
-```bash
-# Pre-deployment
-composer install --no-dev
-npm run build
-
-# Deployment
-php artisan migrate --force
-./deploy.sh production
-```
-
-## 📁 File Structure
-
-```
-laravel/
-├── app/Models/                 # 4 Eloquent models
-├── app/Http/Controllers/       # 8 Controllers
-├── database/migrations/        # 4 Migrations
-├── routes/                     # Web & API routes
-├── resources/views/            # 11 Blade views
-├── tests/Unit/                 # Unit tests
-└── [Documentation]             # 6 guides
-```
-
-## ⚙️ Configuration
-
-Update `.env` with Supabase credentials:
-```
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_KEY=your-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-```
-
-## 📞 Support
-
-**Getting started?** → `QUICKSTART.md`  
-**Installation help?** → `PROJECT_SETUP.md`  
-**Deploying?** → `CONFIG_GUIDE.md`  
-**Roadmap?** → `IMPLEMENTATION_CHECKLIST.md`  
-
-## ✅ Status
-
-**Version**: 1.0.0 (MVP)  
-**Status**: ✅ Complete & Production-Ready  
-**Last Updated**: November 6, 2025  
-
----
-
-Made with ❤️ using Laravel & Supabase
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

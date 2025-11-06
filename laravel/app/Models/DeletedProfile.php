@@ -5,15 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Profile extends Model
+class DeletedProfile extends Model
 {
     use HasFactory;
+
+    protected $table = 'deleted_profiles';
 
     protected $fillable = [
         'user_id',
         'contact_info',
         'wallet_addresses',
         'qr_code_path',
+        'deleted_at',
     ];
 
     protected function casts(): array
@@ -21,14 +24,7 @@ class Profile extends Model
         return [
             'contact_info' => 'json',
             'wallet_addresses' => 'json',
+            'deleted_at' => 'datetime',
         ];
-    }
-
-    /**
-     * Get the user that owns the profile.
-     */
-    public function user()
-    {
-        return $this->belongsTo(User::class);
     }
 }

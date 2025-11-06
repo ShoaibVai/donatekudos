@@ -1,20 +1,20 @@
 @extends('layouts.app')
 
-@section('title', 'Admin Login - DonateKudos')
+@section('title', 'Login - DonateKudos')
 
 @section('content')
 <div style="max-width: 500px; margin: 0 auto;">
     <div class="card">
-        <h1>Admin Login</h1>
-        <p style="color: #666; margin-bottom: 1.5rem;">Enter your admin credentials to access the dashboard.</p>
+        <h1>Sign In to DonateKudos</h1>
+        <p style="color: #666; margin-bottom: 1.5rem;">Welcome back! Please log in to your account.</p>
 
-        <form action="{{ route('admin.login.post') }}" method="POST">
+        <form action="{{ route('login') }}" method="POST">
             @csrf
 
             <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" value="{{ old('username') }}" required>
-                @error('username')
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" value="{{ old('email') }}" required>
+                @error('email')
                     <span class="errors">{{ $message }}</span>
                 @enderror
             </div>
@@ -30,7 +30,11 @@
             <button type="submit">Sign In</button>
 
             <p style="margin-top: 1rem; text-align: center;">
-                <a href="{{ route('home') }}">Back to Home</a>
+                <a href="{{ route('password.request') }}">Forgot your password?</a>
+            </p>
+
+            <p style="text-align: center;">
+                Don't have an account? <a href="{{ route('register') }}">Create one here</a>
             </p>
         </form>
     </div>

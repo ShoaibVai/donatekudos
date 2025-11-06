@@ -5,20 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Gallery extends Model
+class DeletedGallery extends Model
 {
     use HasFactory;
+
+    protected $table = 'deleted_galleries';
 
     protected $fillable = [
         'user_id',
         'image_path',
+        'deleted_at',
     ];
 
-    /**
-     * Get the user that owns the gallery image.
-     */
-    public function user()
+    protected function casts(): array
     {
-        return $this->belongsTo(User::class);
+        return [
+            'deleted_at' => 'datetime',
+        ];
     }
 }

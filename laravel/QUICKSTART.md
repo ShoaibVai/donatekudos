@@ -1,246 +1,211 @@
-# Quick Start Guide - Laravel Supabase Profile Manager
+# DonateKudos - Quick Start Guide
 
-## 5-Minute Setup
+## What Was Built
 
-### 1. Prerequisites Installed?
-- ✅ PHP 8.1+
-- ✅ Composer
-- ✅ Node.js & npm
-- ✅ Supabase Account
+A complete Laravel application with:
+- ✅ User authentication with TOTP (Two-Factor Authentication)
+- ✅ User profile management with image uploads
+- ✅ Admin panel for user management
+- ✅ Data archiving for deleted users
+- ✅ XML export functionality
+- ✅ Secure password reset with recovery tokens
 
-### 2. Clone & Install (2 min)
-```bash
-cd laravel
-composer install
-npm install
-```
+## Database Tables Created
 
-### 3. Environment Setup (1 min)
-```bash
-cp .env.example .env
-php artisan key:generate
-```
+1. **users** - Main user table with TOTP secret
+2. **deleted_users** - Archive of deleted user accounts
+3. **profiles** - User profile data (contact info, wallet addresses, QR codes)
+4. **deleted_profiles** - Archive of deleted profiles
+5. **galleries** - User gallery images
+6. **deleted_galleries** - Archive of deleted gallery images
+7. **admins** - Admin user accounts
 
-**Add to `.env`:**
-```
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_KEY=your-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-```
+## Default Admin Account
 
-### 4. Database Setup (1 min)
-```bash
-php artisan migrate
-```
+- **Username**: `admin`
+- **Password**: `Rishbish$$`
 
-### 5. Start Server (1 min)
-```bash
-php artisan serve
-npm run dev  # in another terminal
-```
+Access admin panel at: `/admin`
 
-Visit: `http://localhost:8000`
+## Key Files & Locations
 
----
+### Controllers
+- `app/Http/Controllers/Auth/RegisterController.php` - User registration with TOTP setup
+- `app/Http/Controllers/Auth/LoginController.php` - Login with TOTP verification
+- `app/Http/Controllers/Auth/ForgotPasswordController.php` - Password reset with recovery tokens
+- `app/Http/Controllers/ProfileController.php` - User profile CRUD and deletion
+- `app/Http/Controllers/AdminController.php` - Admin dashboard and user management
 
-## Common Tasks
+### Models
+- `app/Models/User.php` - User model with TOTP support
+- `app/Models/Profile.php` - User profile model
+- `app/Models/Gallery.php` - Gallery images model
+- `app/Models/Admin.php` - Admin model
+- `app/Models/DeletedUser.php`, `DeletedProfile.php`, `DeletedGallery.php` - Archive models
 
-### Run Tests
-```bash
-php artisan test
-```
+### Views
+- `resources/views/auth/` - Authentication views (register, login, TOTP)
+- `resources/views/profile/` - Profile views (view, edit, public profile)
+- `resources/views/admin/` - Admin views (login, dashboard, user management)
 
-### Reset Database
-```bash
-php artisan migrate:refresh
-```
+### Routes
+- `routes/web.php` - All application routes with middleware
 
-### Create Admin
-Login at `/admin` with password: `Rishbish$$`
+## User Flow
 
-### Build for Production
-```bash
-npm run build
-php artisan config:cache
-php artisan route:cache
-```
+### Registration
+1. User visits `/auth/register`
+2. Fills in name, email, password
+3. Receives TOTP secret and QR code
+4. Scans QR code with authenticator app
+5. Enters 6-digit code to confirm
+6. Redirected to login
 
----
+### Login
+1. User enters email and password
+2. Redirected to TOTP verification page
+3. Enters 6-digit code from authenticator app
+4. Logged in and redirected to profile
 
-## Project Structure
+### Password Reset
+1. User clicks "Forgot Password"
+2. Enters email and recovery token (TOTP secret from registration)
+3. Sets new password
+4. New TOTP secret generated and displayed
+5. Redirected to login
 
-```
-laravel/
-├── app/
-│   ├── Http/
-│   │   ├── Controllers/           # All controllers
-│   │   └── Middleware/
-│   └── Models/                    # Eloquent models
-├── database/
-│   ├── migrations/                # All migrations
-│   └── seeders/
-├── routes/                        # API and web routes
-├── resources/
-│   ├── views/                     # Blade templates
-│   ├── css/
-│   └── js/
-└── tests/
-    ├── Unit/                      # Unit tests
-    └── Feature/                   # Feature tests
-```
+### Profile Management
+1. Logged-in user can view/edit profile
+2. Can upload QR code image
+3. Can add contact info and wallet addresses (JSON format)
+4. Can upload gallery images
+5. Can permanently delete account (moved to archive tables)
 
----
-
-## Key Files
-
-| File | Purpose |
-|------|---------|
-| `routes/web.php` | Web routes & endpoints |
-| `app/Models/Profile.php` | Profile model |
-| `app/Http/Controllers/ProfileController.php` | Profile logic |
-| `.env` | Configuration & credentials |
-| `PROJECT_SETUP.md` | Full documentation |
-| `CONFIG_GUIDE.md` | Production setup |
-
----
-
-## Features Overview
-
-### 👤 User Profiles
-- Create & edit profiles
-- Store contact info & wallet addresses
-- Public profile pages
-- JSON data storage
-
-### 🖼️ Gallery System
-- Upload images to Supabase Storage
-- Organize by profile
-- Delete and manage
-
-### 🔐 2FA/TOTP
-- Enable/disable 2FA
-- TOTP secret generation
-- Backup recovery tokens
-
-### 👨‍💼 Admin Panel
-- View all users
-- Manage profiles
-- Export data as XML
-
-### 🗑️ Data Archival
-- Delete profiles with archival
-- 30-day retention
-- Snapshot preservation
-
----
+### Admin Functions
+1. Login with admin credentials
+2. View active users count
+3. View deleted users count
+4. List all active users
+5. List all deleted users
+6. Export individual user data to XML
 
 ## API Endpoints
 
-### Public
-- `GET /` - Home
-- `GET /profile/{username}` - View profile
-- `GET /api/profile/{username}` - API endpoint
+### Public Routes
+- `GET /` - Home page
+- `GET /auth/register` - Registration form
+- `POST /auth/register` - Submit registration
+- `GET /auth/login` - Login form
+- `POST /auth/login` - Submit login
+- `GET /profile/{username}` - View public profile
+- `GET /admin` - Admin login form
 
-### Authenticated
-- `GET /dashboard` - Dashboard
-- `GET /profile/edit` - Edit form
-- `POST /profile/update` - Save changes
-- `GET /profile/gallery` - Gallery
-- `POST /gallery/upload` - Upload image
+### Authenticated User Routes
+- `GET /profile` - View own profile
+- `GET /profile/edit` - Edit profile form
+- `PUT /profile` - Update profile
+- `DELETE /profile` - Delete account
+- `POST /auth/logout` - Logout
 
-### Admin
-- `GET /admin` - Login
-- `GET /admin/dashboard` - Dashboard
-- `GET /admin/users` - User list
-- `GET /admin/export/xml` - Export
+### Authenticated Admin Routes
+- `GET /admin/dashboard` - Admin dashboard
+- `GET /admin/users` - List active users
+- `GET /admin/users/{id}/export/xml` - Export user to XML
+- `GET /admin/deleted-users` - List deleted users
+- `POST /admin/logout` - Admin logout
 
----
+## Important Notes
 
-## Database Tables
+### TOTP Setup
+- Uses `pragmarx/google2fa` package
+- Compatible with Google Authenticator, Authy, Microsoft Authenticator, etc.
+- Recovery token is the TOTP secret - must be saved securely!
+- Recovery token is used for password reset
 
-### profiles
-- id (UUID)
-- user_id (UUID)
-- username (String)
-- bio (Text)
-- contact_info (JSONB)
-- wallet_addresses (JSONB)
+### File Uploads
+- All files stored in `storage/app/public/`
+- Access via `/storage/` route
+- Make sure storage link exists: `php artisan storage:link`
 
-### galleries
-- id (UUID)
-- profile_id (UUID)
-- image_url (String)
-- filename (String)
+### Data Archiving
+- When user deletes account, data moved to `deleted_*` tables
+- Original user record deleted (cascades to profiles, galleries)
+- Can be restored by admin if needed
 
-### archived_profiles
-- id (UUID)
-- original_profile_id (UUID)
-- user_data (JSONB)
-- gallery_data (JSONB)
-
-### recovery_tokens
-- id (UUID)
-- user_id (UUID)
-- token (String)
-- is_enabled (Boolean)
-
----
-
-## Troubleshooting
-
-### Migrations Fail
-```bash
-# Check Supabase connection
-php artisan tinker
->>> DB::connection()->getPdo()
-```
-
-### Can't Upload Files
-- Verify Supabase Storage bucket exists
-- Check bucket permissions
-- Verify SUPABASE_KEY has access
-
-### Routes Not Found
-```bash
-php artisan route:list        # List all routes
-php artisan route:cache       # Cache routes
-```
-
-### Tests Failing
-```bash
-php artisan test --verbose    # See detailed output
-php artisan test tests/Unit/ProfileCreationTest  # Run single test
-```
-
----
+### Admin Panel Security
+- Admin users in separate `admins` table
+- Uses separate authentication guard: `auth:admin`
+- Middleware checks `auth:admin` on admin routes
 
 ## Next Steps
 
-1. **Customize**: Edit views in `resources/views/`
-2. **Deploy**: Follow `CONFIG_GUIDE.md` for production
-3. **Scale**: Add caching with Redis
-4. **Monitor**: Set up error tracking (Sentry)
-5. **Secure**: Update ADMIN_PASSWORD in `.env`
+1. **Add Seeder for Test Data**
+   ```bash
+   php artisan make:seeder UserSeeder
+   ```
+
+2. **Create Feature Tests**
+   ```bash
+   php artisan make:test UserRegistrationTest --feature
+   ```
+
+3. **Configure Mail** (for email notifications)
+   - Update `.env` MAIL_* variables
+   - Add email notifications to password reset
+
+4. **Add Image Validation**
+   - Extend file upload validation
+   - Add image compression
+
+5. **Customize Styling**
+   - Update `resources/views/layouts/app.blade.php`
+   - Add CSS framework (Tailwind, Bootstrap, etc.)
+
+6. **API Authentication**
+   - Add Laravel Sanctum for API tokens
+   - Create API routes for mobile apps
+
+## Commands Cheat Sheet
+
+```bash
+# Serve the application
+php artisan serve
+
+# Run migrations
+php artisan migrate
+
+# Fresh database
+php artisan migrate:fresh
+
+# Clear all caches
+php artisan cache:clear
+php artisan config:clear
+php artisan view:clear
+
+# Create admin user
+php artisan tinker
+>>> \App\Models\Admin::create(['username' => 'admin', 'password' => bcrypt('password')])
+
+# Create test user
+>>> \App\Models\User::create(['name' => 'John', 'email' => 'john@example.com', 'password' => bcrypt('password'), 'totp_secret' => \App\Http\Controllers\Auth\RegisterController::generateTotpSecret()])
+```
+
+## Troubleshooting
+
+**Issue**: TOTP QR code not displaying
+- **Solution**: Check `bacon/bacon-qr-code` is installed, ensure session working
+
+**Issue**: Profile images not showing
+- **Solution**: Run `php artisan storage:link` and check storage permissions
+
+**Issue**: Admin login not working
+- **Solution**: Check admin exists in database and password is correct
+
+**Issue**: TOTP code always fails
+- **Solution**: Ensure server time is correct, check timezone in `config/app.php`
 
 ---
 
-## Documentation
+**Ready to develop!** 🚀
 
-- 📘 **Full Setup**: `PROJECT_SETUP.md`
-- ⚙️ **Configuration**: `CONFIG_GUIDE.md`
-- 📝 **Laravel Docs**: https://laravel.com/docs
-- 🚀 **Supabase Docs**: https://supabase.com/docs
-
----
-
-## Support
-
-**Need help?**
-- Check the full documentation in `PROJECT_SETUP.md`
-- Review error logs: `storage/logs/`
-- Check database connection
-- Verify Supabase credentials
-
----
-
-**Ready to build? Start with: `php artisan serve`** 🚀
+Questions? Check `README_DONATEKUDOS.md` for detailed documentation.
