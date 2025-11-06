@@ -29,6 +29,8 @@ Route::prefix('auth')->group(function () {
     // Password Reset
     Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
     Route::post('password/reset', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+    Route::get('password/reset/otp', [ForgotPasswordController::class, 'showOtpForm'])->name('password.reset.otp');
+    Route::post('password/reset/otp/verify', [ForgotPasswordController::class, 'verifyOtp'])->name('password.reset.otp.verify');
     Route::get('password/reset/form', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset.form');
     Route::post('password/reset/confirm', [ForgotPasswordController::class, 'reset'])->name('password.reset.confirm');
     Route::get('password/reset/done', [ForgotPasswordController::class, 'showResetDone'])->name('password.reset.done');

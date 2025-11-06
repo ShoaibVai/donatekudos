@@ -46,18 +46,31 @@ class RegisterController extends Controller
         // Create profile
         Profile::create(['user_id' => $user->id]);
 
-        // Generate QR code URL
-        $qrCodeUrl = $this->google2fa->getQRCodeUrl(
-            config('app.name'),
-            $user->email,
-            $secret
-        );
+        // Generate QR code image
+        $qrCodeUrl = $this->generateQrCodeDataUrl($user->email, $secret);
 
         // Store in session and show TOTP setup page
         session(['totp_secret' => $secret, 'qr_code_url' => $qrCodeUrl, 'user_email' => $user->email]);
 
         return redirect()->route('auth.totp-setup')
             ->with('success', 'Registration successful! Please set up your authenticator app.');
+    }
+
+    protected function generateQrCodeDataUrl($email, $secret)
+    {
+        try {
+            $qrUrl = $this->google2fa->getQRCodeUrl(
+                config('app.name'),
+                $email,
+                $secret
+            );
+            
+            // Use Google's QR code API
+            return 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($qrUrl);
+        } catch (\Exception $e) {
+            // Fallback
+            return null;
+        }
     }
 
     public function showTotpSetup()

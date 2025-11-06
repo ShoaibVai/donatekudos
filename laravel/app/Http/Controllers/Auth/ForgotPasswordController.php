@@ -25,7 +25,7 @@ class ForgotPasswordController extends Controller
     {
         $request->validate([
             'email' => 'required|email|exists:users,email',
-            'recovery_token' => 'required',
+            'totp_code' => 'required|digits:6',
         ]);
 
         $user = User::where('email', $request->email)->first();
@@ -35,17 +35,18 @@ class ForgotPasswordController extends Controller
                 ->withErrors(['email' => 'No account found with this email.']);
         }
 
-        // Verify recovery token (TOTP secret)
-        if ($user->totp_secret !== $request->recovery_token) {
+        // Verify TOTP code using the user's current secret
+        if (!$this->google2fa->verifyKey($user->totp_secret, $request->totp_code)) {
             return redirect()->back()
-                ->withErrors(['recovery_token' => 'Invalid recovery token.']);
+                ->withErrors(['totp_code' => 'Invalid TOTP code. Please check your authenticator app and try again.'])
+                ->withInput($request->only('email'));
         }
 
         // Store user ID and show password reset form
         session(['reset_user_id' => $user->id]);
 
         return redirect()->route('password.reset.form')
-            ->with('success', 'Recovery token verified. Please enter your new password.');
+            ->with('success', 'TOTP verification successful. Please enter your new password.');
     }
 
     public function showResetForm()
@@ -86,10 +87,12 @@ class ForgotPasswordController extends Controller
         ]);
 
         // Generate QR code for new secret
-        $qrCodeUrl = $this->google2fa->getQRCodeUrl(
-            config('app.name'),
-            $user->email,
-            $newSecret
+        $qrCodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode(
+            $this->google2fa->getQRCodeUrl(
+                config('app.name'),
+                $user->email,
+                $newSecret
+            )
         );
 
         session()->forget('reset_user_id');
