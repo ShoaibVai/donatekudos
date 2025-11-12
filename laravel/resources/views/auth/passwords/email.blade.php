@@ -3,92 +3,122 @@
 @section('title', 'Reset Password - DonateKudos')
 
 @section('content')
-<div class="min-h-screen flex items-center justify-center px-4 py-8 bg-gradient-to-br from-purple-50 to-blue-50">
+<div class="min-h-screen flex items-center justify-center px-4 py-8">
     <div class="w-full max-w-md">
-        <div class="card shadow-2xl">
-            <!-- Header -->
-            <div class="bg-gradient-brand text-white p-8 text-center">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/20 mb-4">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
-                    </svg>
+        <!-- Animated Card -->
+        <div class="card shadow-2xl overflow-hidden">
+            <!-- Header Background -->
+            <div class="h-24 bg-gradient-to-br from-orange-600 via-red-500 to-pink-500 relative overflow-hidden">
+                <div class="absolute inset-0 opacity-10">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-white rounded-full mix-blend-multiply filter blur-2xl"></div>
                 </div>
-                <h1 class="text-2xl font-bold">Reset Password</h1>
-                <p class="text-purple-100 text-sm mt-2">Verify your identity to continue</p>
+                <div class="relative z-10 flex items-center justify-center h-full">
+                    <i class="fas fa-key text-white text-4xl"></i>
+                </div>
             </div>
 
-            <!-- Form -->
             <div class="p-8">
-                <p class="text-gray-600 text-sm mb-6">Enter your email address and the 6-digit code from your authenticator app to reset your password.</p>
+                <div class="text-center mb-8">
+                    <h1 class="text-4xl font-bold text-gray-900 mb-2">Reset Password</h1>
+                    <p class="text-gray-500 flex items-center justify-center gap-2">
+                        <i class="fas fa-lock"></i>
+                        Verify your identity to continue
+                    </p>
+                </div>
 
-                <form action="{{ route('password.request') }}" method="POST" class="space-y-6">
+                <!-- Info Box -->
+                <div class="bg-gradient-to-br from-blue-50 to-cyan-50 border-l-4 border-blue-500 rounded-lg p-4 mb-6">
+                    <p class="text-sm text-blue-900">
+                        <i class="fas fa-info-circle text-blue-600 mr-2"></i>
+                        Enter your email address and the 6-digit code from your authenticator app to reset your password.
+                    </p>
+                </div>
+
+                <form action="{{ route('password.request') }}" method="POST" class="space-y-5">
                     @csrf
 
-                    <!-- Email -->
+                    <!-- Email Field -->
                     <div>
-                        <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
-                            <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
-                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
-                            </svg>
+                        <label for="email" class="form-label">
+                            <i class="fas fa-envelope text-orange-600 mr-2"></i>
                             Email Address
                         </label>
-                        <input 
-                            type="email" 
-                            id="email" 
-                            name="email" 
-                            value="{{ old('email') }}" 
-                            required
-                            class="input-modern input-focus-ring w-full"
-                            placeholder="your@email.com"
-                            autocomplete="email"
-                        >
+                        <div class="relative">
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                value="{{ old('email') }}" 
+                                required
+                                class="input-modern w-full pl-10"
+                                placeholder="your@email.com"
+                                autocomplete="email"
+                            >
+                            <i class="fas fa-envelope absolute left-3 top-3 text-gray-400"></i>
+                        </div>
                         @error('email')
-                            <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
+                            <div class="mt-2 text-sm text-red-600 flex items-center gap-2 bg-red-50 p-2 rounded border border-red-200">
+                                <i class="fas fa-exclamation-circle"></i>
+                                {{ $message }}
+                            </div>
                         @enderror
                     </div>
 
-                    <!-- TOTP Code -->
+                    <!-- TOTP Code Field -->
                     <div>
-                        <label for="totp_code" class="block text-sm font-semibold text-gray-700 mb-2">
-                            <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00-.293.707l-1.418 1.418a1 1 0 101.414 1.414L9 9.414V6z" clip-rule="evenodd"></path>
-                            </svg>
+                        <label for="totp_code" class="form-label">
+                            <i class="fas fa-barcode text-orange-600 mr-2"></i>
                             6-Digit Code
                         </label>
-                        <input 
-                            type="text" 
-                            id="totp_code" 
-                            name="totp_code" 
-                            placeholder="000000" 
-                            maxlength="6" 
-                            inputmode="numeric" 
-                            pattern="[0-9]{6}" 
-                            required
-                            class="input-modern input-focus-ring w-full text-center text-2xl tracking-widest font-mono"
-                            autocomplete="off"
-                        >
-                        <p class="text-xs text-gray-600 mt-2">📱 Enter the 6-digit code from Google Authenticator, Authy, or your authenticator app</p>
+                        <div class="relative">
+                            <input 
+                                type="text" 
+                                id="totp_code" 
+                                name="totp_code" 
+                                placeholder="000000" 
+                                maxlength="6" 
+                                inputmode="numeric" 
+                                pattern="[0-9]{6}" 
+                                required
+                                class="input-modern w-full text-center text-3xl tracking-[0.5em] font-bold font-mono"
+                                autocomplete="off"
+                            >
+                            <i class="fas fa-shield-alt absolute right-3 top-3 text-gray-400"></i>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2 flex items-center gap-1">
+                            <i class="fas fa-mobile-alt"></i>
+                            Enter the code from Google Authenticator, Authy, or your authenticator app
+                        </p>
                         @error('totp_code')
-                            <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
+                            <div class="mt-2 text-sm text-red-600 flex items-center gap-2 bg-red-50 p-2 rounded border border-red-200">
+                                <i class="fas fa-exclamation-circle"></i>
+                                {{ $message }}
+                            </div>
                         @enderror
                     </div>
 
                     <!-- Submit Button -->
-                    <button type="submit" class="btn-primary w-full">Verify & Reset Password</button>
+                    <button type="submit" class="btn-primary-lg w-full group">
+                        <i class="fas fa-redo group-hover:scale-110 transition-transform"></i>
+                        Verify & Reset Password
+                    </button>
+
+                    <!-- Back to Login -->
+                    <div class="text-center">
+                        <a href="{{ route('login') }}" class="inline-flex items-center gap-2 text-orange-600 hover:text-orange-700 font-semibold transition hover:gap-3">
+                            <i class="fas fa-arrow-left"></i>
+                            Back to Login
+                        </a>
+                    </div>
                 </form>
             </div>
-
-            <!-- Footer -->
-            <div class="border-t border-gray-200 px-8 py-4 bg-gray-50 text-center">
-                <a href="{{ route('login') }}" class="text-purple-600 hover:text-purple-700 font-semibold text-sm inline-flex items-center gap-1">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                    </svg>
-                    Back to Login
-                </a>
-            </div>
         </div>
+
+        <!-- Security Notice -->
+        <p class="text-center text-gray-500 text-xs mt-6">
+            <i class="fas fa-lock text-green-600 mr-1"></i>
+            Your information is protected with 256-bit encryption
+        </p>
     </div>
 </div>
 @endsection

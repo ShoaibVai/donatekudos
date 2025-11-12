@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'totp_secret',
+        'profile_picture',
     ];
 
     /**

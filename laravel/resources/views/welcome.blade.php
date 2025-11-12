@@ -5,48 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DonateKudos - Share Impact, Inspire Change</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        h1, h2, h3 { font-family: 'Poppins', sans-serif; }
-        .gradient-brand { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .hero-text { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        * { font-family: 'Sora', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Outfit', sans-serif; font-weight: 700; }
+        
+        .gradient-brand { background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); }
+        .gradient-text { background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .gradient-bg { background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%); }
+        
+        .btn-primary-lg { @apply px-6 py-3 bg-gradient-to-r from-violet-600 to-pink-600 text-white rounded-xl font-semibold hover:shadow-xl hover:shadow-violet-500/50 transition-all duration-300 active:scale-95; }
+        .btn-secondary { @apply px-6 py-3 border-2 border-violet-600 text-violet-600 rounded-xl font-semibold hover:bg-violet-50 transition-all duration-300; }
+        
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .animate-slide-down { animation: slideDown 0.6s ease-out; }
+        .animate-fade-in { animation: fadeIn 0.8s ease-out; }
     </style>
 </head>
 <body class="bg-white">
-    <!-- Navigation -->
-    <nav class="sticky top-0 z-50 bg-white shadow-sm">
+    <!-- Modern Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-200/50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-lg gradient-brand flex items-center justify-center">
-                        <span class="text-white font-bold text-lg">DK</span>
-                    </div>
-                    <h1 class="text-xl font-bold hero-text">DonateKudos</h1>
-                </div>
-                <div class="hidden md:flex gap-6 items-center">
-                    <a href="#features" class="text-gray-600 hover:text-purple-600 font-medium">Features</a>
-                    <a href="#how-it-works" class="text-gray-600 hover:text-purple-600 font-medium">How It Works</a>
+                <a href="/" class="flex items-center gap-3 group">
+                    <div class="w-9 h-9 gradient-brand rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg">DK</div>
+                    <span class="font-bold text-xl gradient-text group-hover:scale-105 transition-transform duration-300">DonateKudos</span>
+                </a>
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#features" class="text-gray-700 hover:text-violet-600 font-medium transition-colors duration-300">Features</a>
+                    <a href="#how-it-works" class="text-gray-700 hover:text-violet-600 font-medium transition-colors duration-300">How It Works</a>
                     @auth
-                        <a href="{{ route('profile.index') }}" class="text-gray-600 hover:text-purple-600 font-medium">My Profile</a>
+                        <a href="{{ route('profile.index') }}" class="text-gray-700 hover:text-violet-600 font-medium transition-colors duration-300">
+                            <i class="fas fa-user-circle mr-2"></i>My Profile
+                        </a>
                         <form method="POST" action="{{ route('logout') }}" class="inline">
                             @csrf
-                            <button type="submit" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium">Logout</button>
+                            <button type="submit" class="text-gray-700 hover:text-red-600 font-medium transition-colors duration-300">
+                                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                            </button>
                         </form>
                     @else
-                        <a href="{{ route('login') }}" class="text-gray-600 hover:text-purple-600 font-medium">Sign In</a>
-                        <a href="{{ route('register') }}" class="px-6 py-2 gradient-brand text-white rounded-lg font-medium hover:shadow-lg transition">Join Now</a>
+                        <a href="{{ route('login') }}" class="text-gray-700 hover:text-violet-600 font-medium transition-colors duration-300">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Sign In
+                        </a>
+                        <a href="{{ route('register') }}" class="btn-primary-lg">
+                            <i class="fas fa-user-plus mr-2"></i>Get Started
+                        </a>
                     @endauth
                 </div>
-                <div class="md:hidden flex gap-3">
+                <div class="md:hidden flex items-center gap-2">
                     @auth
                         <form method="POST" action="{{ route('logout') }}" class="inline">
                             @csrf
-                            <button type="submit" class="px-3 py-1 bg-gray-100 rounded text-sm">Logout</button>
+                            <button type="submit" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </button>
                         </form>
                     @else
-                        <a href="{{ route('login') }}" class="text-sm font-medium text-gray-600">Sign In</a>
-                        <a href="{{ route('register') }}" class="px-3 py-1 gradient-brand text-white rounded text-sm">Join</a>
+                        <a href="{{ route('login') }}" class="p-2 text-violet-600 hover:bg-violet-50 rounded-lg transition">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </a>
                     @endauth
                 </div>
             </div>

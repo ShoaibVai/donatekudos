@@ -38,12 +38,22 @@ class ProfileController extends Controller
         $validated = $request->validate([
             'contact_info' => 'nullable|json',
             'wallet_addresses' => 'nullable|json',
+            'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'qr_code' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'gallery_images.*' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $user = Auth::user();
         $profile = $user->profile;
+
+        // Handle profile picture upload
+        if ($request->hasFile('profile_picture')) {
+            if ($user->profile_picture && Storage::exists($user->profile_picture)) {
+                Storage::delete($user->profile_picture);
+            }
+            $user->profile_picture = $request->file('profile_picture')->store('profile-pictures', 'public');
+            $user->save();
+        }
 
         // Update contact info and wallet addresses
         if ($request->filled('contact_info')) {
