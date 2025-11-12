@@ -131,6 +131,27 @@ echo STEP 3: Installing PHP Dependencies
 echo ============================================================================
 echo.
 
+echo %INFO% Checking for existing dependencies...
+
+if exist "vendor\autoload.php" (
+    echo %INFO% Found vendor directory
+    echo %INFO% Checking if dependencies are up to date...
+    
+    REM Check if composer.lock exists and if vendor has files
+    if exist "composer.lock" (
+        for /f %%A in ('dir /b vendor ^| find /c /v ""') do (
+            if %%A gtr 5 (
+                echo %SUCCESS% Dependencies already installed!
+                set /p UPDATE_DEPS="Update dependencies? (y/n): "
+                if /i "!UPDATE_DEPS!"=="n" (
+                    echo %INFO% Skipping composer install
+                    goto :skip_composer_install
+                )
+            )
+        )
+    )
+)
+
 echo %INFO% Installing Composer dependencies...
 echo %INFO% This may take several minutes...
 echo.
@@ -145,6 +166,8 @@ if %errorLevel% neq 0 (
 
 echo %SUCCESS% Composer dependencies installed!
 echo.
+
+:skip_composer_install
 pause
 
 REM ============================================================================
@@ -157,11 +180,16 @@ echo ===========================================================================
 echo.
 
 if exist ".env" (
-    echo %WARNING% .env file already exists
-    set /p OVERWRITE="Overwrite existing .env? (y/n): "
+    echo %SUCCESS% .env file already exists
+    echo %INFO% Current configuration will be preserved
+    set /p OVERWRITE="Regenerate .env file? (y/n): "
     if /i "!OVERWRITE!"=="n" (
         echo %INFO% Using existing .env file
+        echo %INFO% Skipping environment setup
         goto :skip_env
+    ) else (
+        echo %INFO% Backing up existing .env to .env.backup
+        copy ".env" ".env.backup"
     )
 )
 
@@ -215,17 +243,28 @@ echo STEP 5: Database Setup
 echo ============================================================================
 echo.
 
+echo %INFO% Checking for existing database...
+
 if exist "database\database.sqlite" (
-    echo %WARNING% Database file already exists
-    set /p RESET_DB="Reset database? (y/n): "
+    echo %SUCCESS% Database file already exists!
+    echo %INFO% Running migrations to ensure tables are up to date...
+    
+    set /p RESET_DB="Reset database to fresh state? (y/n): "
     if /i "!RESET_DB!"=="y" (
         echo %INFO% Deleting existing database...
         del /f /q database\database.sqlite
+        echo %INFO% Creating new SQLite database file...
+        type nul > database\database.sqlite
+    ) else (
+        echo %INFO% Keeping existing database
+        echo %INFO% Running any pending migrations...
+        php artisan migrate
+        goto :skip_fresh_db
     )
 )
 
-echo %INFO% Creating SQLite database file...
 if not exist "database\database.sqlite" (
+    echo %INFO% Creating SQLite database file...
     type nul > database\database.sqlite
 )
 
@@ -240,6 +279,8 @@ if %errorLevel% neq 0 (
 
 echo %SUCCESS% Database migrations completed!
 echo.
+
+:skip_fresh_db
 pause
 
 REM ============================================================================
@@ -275,14 +316,21 @@ echo STEP 7: Storage Setup
 echo ============================================================================
 echo.
 
-echo %INFO% Creating storage symlink...
-php artisan storage:link
+echo %INFO% Checking for storage symlink...
 
-if %errorLevel% neq 0 (
-    echo %WARNING% Storage symlink creation had issues
-    echo %INFO% Try running manually: php artisan storage:link
+if exist "public\storage" (
+    echo %SUCCESS% Storage symlink already exists!
+    echo %INFO% File uploads are properly configured
 ) else (
-    echo %SUCCESS% Storage symlink created!
+    echo %INFO% Creating storage symlink...
+    php artisan storage:link
+
+    if %errorLevel% neq 0 (
+        echo %WARNING% Storage symlink creation had issues
+        echo %INFO% Try running manually: php artisan storage:link
+    ) else (
+        echo %SUCCESS% Storage symlink created!
+    )
 )
 echo.
 pause
@@ -295,6 +343,19 @@ echo ===========================================================================
 echo STEP 8: Node.js Dependencies (Optional)
 echo ============================================================================
 echo.
+
+echo %INFO% Checking for existing Node dependencies...
+
+if exist "node_modules" (
+    echo %SUCCESS% node_modules directory already exists!
+    echo %INFO% Dependencies appear to be installed
+    
+    set /p REINSTALL_NODE="Reinstall/update dependencies? (y/n): "
+    if /i "!REINSTALL_NODE!"=="n" (
+        echo %INFO% Skipping npm install
+        goto :skip_node_install
+    )
+)
 
 set /p INSTALL_NODE="Install Node.js dependencies? (y/n): "
 if /i "!INSTALL_NODE!"=="y" (
@@ -315,6 +376,8 @@ if /i "!INSTALL_NODE!"=="y" (
 ) else (
     echo %INFO% Skipping npm dependencies
 )
+
+:skip_node_install
 echo.
 pause
 
