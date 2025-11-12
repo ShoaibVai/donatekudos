@@ -1,27 +1,41 @@
 @extends('layouts.app')
 
-@section('title', 'Set Up Authenticator - DonateKudos')
+@section('title', 'Password Reset - DonateKudos')
 
 @section('content')
-<div style="max-width: 500px; margin: 0 auto;">
-    <div class="card">
-        <h1>Set Up Authenticator</h1>
-        <p style="color: #666; margin-bottom: 1.5rem;">A new authenticator secret has been generated. Please set it up now.</p>
+<div class="min-h-[calc(100vh-16rem)] flex items-center justify-center py-8">
+    <div class="w-full max-w-md">
+        <div class="card p-8 text-center">
+            <div class="mb-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-4">
+                    <svg class="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+            </div>
 
-        <div style="text-align: center; margin: 1.5rem 0;">
-            <img src="{{ $qrCodeUrl }}" alt="QR Code" style="width: 250px; height: 250px; border: 2px solid #ddd; padding: 1rem; background: white;">
+            <h1 class="text-4xl font-bold gradient-text mb-3">Password Reset!</h1>
+            <p class="text-gray-600 mb-6">Your password has been successfully reset.</p>
+
+            <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                <p class="text-sm text-green-800">
+                    <strong>✓ Success!</strong> You can now login with your new password.
+                </p>
+            </div>
+
+            <a href="{{ route('login') }}" class="inline-block btn-primary w-full mb-4">
+                Login to Your Account
+            </a>
+
+            <div class="border-t border-gray-200 pt-4">
+                <p class="text-xs text-gray-600">
+                    Don't have an account?
+                    <a href="{{ route('register') }}" class="text-purple-600 hover:text-purple-700 font-semibold">
+                        Create one now
+                    </a>
+                </p>
+            </div>
         </div>
-
-        <div style="background-color: #f9f9f9; padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem;">
-            <p style="color: #666; font-size: 0.875rem; margin-bottom: 0.5rem;">Or enter this secret key manually:</p>
-            <code style="font-size: 1.1rem; word-break: break-all;">{{ $secret }}</code>
-        </div>
-
-        <p style="background-color: #fff3cd; color: #856404; padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem;">
-            <strong>Save this secret key in a safe place!</strong> You'll need it to reset your password if you forget it again.
-        </p>
-
-        <a href="{{ route('login') }}" style="display: block; text-align: center; padding: 0.75rem; background-color: #3498db; color: white; text-decoration: none; border-radius: 4px;">Continue to Login</a>
     </div>
 </div>
 @endsection

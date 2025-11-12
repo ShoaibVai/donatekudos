@@ -4,170 +4,107 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'DonateKudos')</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
-            line-height: 1.6;
-        }
-        nav {
-            background-color: #2c3e50;
-            padding: 1rem 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        nav a, nav form {
-            color: white;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            display: inline-block;
-            margin: 0 0.5rem;
-        }
-        nav a:hover {
-            background-color: #34495e;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem 1rem;
-        }
-        .alert {
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 4px;
-        }
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .alert-error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-        input[type="text"],
-        input[type="email"],
-        input[type="password"],
-        input[type="number"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1rem;
-        }
-        input:focus,
-        textarea:focus,
-        select:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-        }
-        button, input[type="submit"] {
-            background-color: #3498db;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.3s;
-        }
-        button:hover, input[type="submit"]:hover {
-            background-color: #2980b9;
-        }
-        .btn-danger {
-            background-color: #e74c3c;
-        }
-        .btn-danger:hover {
-            background-color: #c0392b;
-        }
-        .card {
-            background: white;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-        }
-        .errors {
-            color: #e74c3c;
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        table th,
-        table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        table th {
-            background-color: #2c3e50;
-            color: white;
-        }
-        table tr:hover {
-            background-color: #f9f9f9;
-        }
+        * { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        .gradient-brand { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .gradient-text { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .btn-primary { @apply px-4 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-lg font-semibold hover:shadow-lg transition; }
+        .btn-secondary { @apply px-4 py-3 border-2 border-purple-600 text-purple-600 rounded-lg font-semibold hover:bg-purple-50 transition; }
+        .btn-ghost { @apply px-4 py-3 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition; }
+        .card { @apply bg-white rounded-lg shadow-sm border border-gray-200; }
+        .input-modern { @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none; }
+        .input-focus-ring { @apply focus:border-purple-500 focus:ring-2 focus:ring-purple-200; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .fade-in { animation: fadeIn 0.3s ease-in; }
     </style>
-    @yield('styles')
 </head>
-<body>
-    <nav>
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <a href="{{ route('home') }}" style="font-weight: bold; font-size: 1.2rem;">DonateKudos</a>
-            </div>
-            <div>
-                @auth
-                    <a href="{{ route('profile.index') }}">Profile</a>
-                    <form action="{{ route('logout') }}" method="POST" style="display: inline;">
-                        @csrf
-                        <button type="submit" style="background: none; border: none; color: white; cursor: pointer; padding: 0.5rem 1rem;">Logout</button>
-                    </form>
-                @else
-                    <a href="{{ route('login') }}">Login</a>
-                    <a href="{{ route('register') }}">Register</a>
-                @endauth
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-40 bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="/" class="flex items-center gap-2">
+                    <div class="w-8 h-8 gradient-brand rounded-lg"></div>
+                    <span class="font-bold text-lg gradient-text">DonateKudos</span>
+                </a>
+                <div class="flex items-center gap-4">
+                    @auth
+                        <span class="text-gray-600">{{ auth()->user()->name }}</span>
+                        <form action="{{ route('logout') }}" method="POST" class="inline">
+                            @csrf
+                            <button type="submit" class="text-red-600 hover:text-red-700 font-semibold">Logout</button>
+                        </form>
+                    @else
+                        <a href="{{ route('login') }}" class="text-purple-600 font-semibold">Login</a>
+                        <a href="{{ route('register') }}" class="btn-primary">Sign Up</a>
+                    @endauth
+                </div>
             </div>
         </div>
     </nav>
 
-    <div class="container">
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
+    <!-- Flash Messages -->
+    @if(session('success'))
+        <div class="max-w-7xl mx-auto mx-4 mt-4 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3 fade-in">
+            <span class="text-2xl">✓</span>
+            <p class="text-green-800">{{ session('success') }}</p>
+        </div>
+    @endif
 
-        @if ($errors->any())
-            <div class="alert alert-error">
-                @foreach ($errors->all() as $error)
-                    <div>{{ $error }}</div>
-                @endforeach
-            </div>
-        @endif
+    @if(session('error'))
+        <div class="max-w-7xl mx-auto mx-4 mt-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 fade-in">
+            <span class="text-2xl">✕</span>
+            <p class="text-red-800">{{ session('error') }}</p>
+        </div>
+    @endif
 
+    <!-- Main Content -->
+    <main class="min-h-[calc(100vh-16rem)]">
         @yield('content')
-    </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="font-bold text-lg mb-4">DonateKudos</h3>
+                    <p class="text-gray-400">A modern platform for donation profiling.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Features</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-white">Profile Management</a></li>
+                        <li><a href="#" class="hover:text-white">Secure Donations</a></li>
+                        <li><a href="#" class="hover:text-white">Two-Factor Auth</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Company</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-white">About</a></li>
+                        <li><a href="#" class="hover:text-white">Contact</a></li>
+                        <li><a href="#" class="hover:text-white">Privacy</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Security</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-white">Terms</a></li>
+                        <li><a href="#" class="hover:text-white">Security Policy</a></li>
+                        <li><a href="#" class="hover:text-white">Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 DonateKudos. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
