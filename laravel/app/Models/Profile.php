@@ -2,42 +2,88 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
-/**
- * @property int $id
- * @property int $user_id
- * @property string|null $contact_info
- * @property string|null $wallet_addresses
- * @property string|null $qr_code_path
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- */
 class Profile extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'user_id',
-        'contact_info',
-        'wallet_addresses',
-        'qr_code_path',
+        'slug',
+        'bio',
+        'custom_html',
+        'custom_css',
+        'custom_js',
+        'theme',
+        'template_id',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'contact_info' => 'json',
-            'wallet_addresses' => 'json',
-        ];
-    }
+    protected $casts = [
+        'template_id' => 'integer',
+    ];
 
     /**
-     * Get the user that owns the profile.
+     * Boot method to add model events
      */
+    protected static function boot()
+    {
+        parent::boot();
+        
+        // Ensure slug is URL-safe
+        static::saving(function ($profile) {
+            if ($profile->isDirty('slug')) {
+                $profile->slug = Str::slug($profile->slug);
+            }
+        });
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function galleryImages()
+    {
+        return $this->hasMany(GalleryImage::class)->orderBy('order');
+    }
+
+    /**
+     * Sanitize custom HTML to remove dangerous tags and scripts
+     */
+    public function getSafeCustomHtmlAttribute()
+    {
+        if (empty($this->custom_html)) {
+            return '';
+        }
+        // Basic sanitization - remove script tags and dangerous attributes
+        $html = $this->custom_html;
+        $html = preg_replace('/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi', '', $html);
+        $html = preg_replace('/on\w+\s*=\s*["\'][^"\'\']*["\']/', '', $html);
+        return $html;
+    }
+
+    /**
+     * Sanitize custom CSS to remove dangerous content
+     */
+    public function getSafeCustomCssAttribute()
+    {
+        if (empty($this->custom_css)) {
+            return '';
+        }
+        // Remove javascript: and data: URLs from CSS
+        $css = $this->custom_css;
+        $css = preg_replace('/javascript\s*:/i', '', $css);
+        $css = preg_replace('/data\s*:/i', '', $css);
+        return $css;
+    }
+
+    /**
+     * Get safe custom JS (completely disabled for security)
+     */
+    public function getSafeCustomJsAttribute()
+    {
+        // For security, we should not allow custom JS
+        // Return empty string or commented out code
+        return '// Custom JavaScript is disabled for security reasons';
     }
 }

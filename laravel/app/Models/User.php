@@ -7,17 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-/**
- * @property int $id
- * @property string $name
- * @property string $email
- * @property \Illuminate\Support\Carbon|null $email_verified_at
- * @property string $password
- * @property string|null $remember_token
- * @property string|null $totp_secret
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- */
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -32,8 +21,13 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'totp_secret',
+        'is_admin',
     ];
+
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -43,7 +37,6 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        'totp_secret',
     ];
 
     /**
@@ -56,22 +49,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'boolean',
         ];
-    }
-
-    /**
-     * Get the user's profile.
-     */
-    public function profile()
-    {
-        return $this->hasOne(Profile::class);
-    }
-
-    /**
-     * Get the user's gallery images.
-     */
-    public function galleries()
-    {
-        return $this->hasMany(Gallery::class);
     }
 }

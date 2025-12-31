@@ -1,271 +1,120 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DonateKudos - Share Impact, Inspire Change</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DonateKudos - Show Off Your Best Self</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
     <style>
-        * { font-family: 'Sora', sans-serif; }
-        h1, h2, h3, h4, h5, h6 { font-family: 'Outfit', sans-serif; font-weight: 700; }
-        
-        .gradient-brand { background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); }
-        .gradient-text { background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .gradient-bg { background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%); }
-        
-        .btn-primary-lg { @apply px-6 py-3 bg-gradient-to-r from-violet-600 to-pink-600 text-white rounded-xl font-semibold hover:shadow-xl hover:shadow-violet-500/50 transition-all duration-300 active:scale-95; }
-        .btn-secondary { @apply px-6 py-3 border-2 border-violet-600 text-violet-600 rounded-xl font-semibold hover:bg-violet-50 transition-all duration-300; }
-        
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        .animate-slide-down { animation: slideDown 0.6s ease-out; }
-        .animate-fade-in { animation: fadeIn 0.8s ease-out; }
+        .hero-bg {
+            background-color: #0f172a;
+            background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+        }
+        .floating-card {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
     </style>
 </head>
-<body class="bg-white">
-    <!-- Modern Navigation -->
-    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-200/50 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <a href="/" class="flex items-center gap-3 group">
-                    <div class="w-9 h-9 gradient-brand rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg">DK</div>
-                    <span class="font-bold text-xl gradient-text group-hover:scale-105 transition-transform duration-300">DonateKudos</span>
-                </a>
-                <div class="hidden md:flex items-center gap-8">
-                    <a href="#features" class="text-gray-700 hover:text-violet-600 font-medium transition-colors duration-300">Features</a>
-                    <a href="#how-it-works" class="text-gray-700 hover:text-violet-600 font-medium transition-colors duration-300">How It Works</a>
-                    @auth
-                        <a href="{{ route('profile.index') }}" class="text-gray-700 hover:text-violet-600 font-medium transition-colors duration-300">
-                            <i class="fas fa-user-circle mr-2"></i>My Profile
-                        </a>
-                        <form method="POST" action="{{ route('logout') }}" class="inline">
-                            @csrf
-                            <button type="submit" class="text-gray-700 hover:text-red-600 font-medium transition-colors duration-300">
-                                <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                            </button>
-                        </form>
-                    @else
-                        <a href="{{ route('login') }}" class="text-gray-700 hover:text-violet-600 font-medium transition-colors duration-300">
-                            <i class="fas fa-sign-in-alt mr-2"></i>Sign In
-                        </a>
-                        <a href="{{ route('register') }}" class="btn-primary-lg">
-                            <i class="fas fa-user-plus mr-2"></i>Get Started
-                        </a>
-                    @endauth
-                </div>
-                <div class="md:hidden flex items-center gap-2">
-                    @auth
-                        <form method="POST" action="{{ route('logout') }}" class="inline">
-                            @csrf
-                            <button type="submit" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition">
-                                <i class="fas fa-sign-out-alt"></i>
-                            </button>
-                        </form>
-                    @else
-                        <a href="{{ route('login') }}" class="p-2 text-violet-600 hover:bg-violet-50 rounded-lg transition">
-                            <i class="fas fa-sign-in-alt"></i>
-                        </a>
-                    @endauth
-                </div>
-            </div>
+<body class="antialiased text-white hero-bg min-h-screen flex flex-col">
+
+    <nav class="w-full p-6 flex justify-between items-center z-50">
+        <div class="text-2xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500">
+            DonateKudos
+        </div>
+        <div class="space-x-4">
+            @if (Route::has('login'))
+                @auth
+                    <a href="{{ url('/dashboard') }}" class="font-semibold hover:text-pink-400 transition">Dashboard</a>
+                @else
+                    <a href="{{ route('login') }}" class="font-semibold hover:text-pink-400 transition">Log in</a>
+                    @if (Route::has('register'))
+                        <a href="{{ route('register') }}" class="px-4 py-2 rounded-full bg-pink-600 hover:bg-pink-700 transition font-semibold">Get Started</a>
+                    @endif
+                @endauth
+            @endif
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="relative overflow-hidden py-20 px-4 sm:px-6 lg:px-8">
-        <div class="absolute inset-0 gradient-brand opacity-5"></div>
-        <div class="relative max-w-6xl mx-auto">
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-                <div>
-                    <h2 class="text-5xl md:text-6xl font-bold mb-6 hero-text">Share Your Impact, Inspire Change</h2>
-                    <p class="text-xl text-gray-600 mb-8">Create your donor profile, showcase your charitable journey, and connect with a community of changemakers. Secure, transparent, and inspiring.</p>
-                    @auth
-                        <a href="{{ route('profile.index') }}" class="inline-block px-8 py-4 gradient-brand text-white rounded-lg font-semibold hover:shadow-xl transition">View Your Profile</a>
-                    @else
-                        <div class="flex flex-col sm:flex-row gap-4">
-                            <a href="{{ route('register') }}" class="inline-block px-8 py-4 gradient-brand text-white rounded-lg font-semibold hover:shadow-xl transition text-center">Create Your Profile</a>
-                            <a href="{{ route('login') }}" class="inline-block px-8 py-4 border-2 border-purple-600 text-purple-600 rounded-lg font-semibold hover:bg-purple-50 transition text-center">Sign In</a>
-                        </div>
-                    @endauth
-                </div>
-                <div class="hidden md:block">
-                    <div class="bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-12 border border-purple-100">
-                        <div class="space-y-6">
-                            <div class="flex items-start gap-4">
-                                <div class="w-10 h-10 rounded-lg gradient-brand flex items-center justify-center flex-shrink-0 mt-1">
-                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                </div>
-                                <div>
-                                    <h3 class="font-semibold text-gray-900">Verified Profiles</h3>
-                                    <p class="text-sm text-gray-600">Your authentic story, secured with 2FA</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-4">
-                                <div class="w-10 h-10 rounded-lg gradient-brand flex items-center justify-center flex-shrink-0 mt-1">
-                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>
-                                </div>
-                                <div>
-                                    <h3 class="font-semibold text-gray-900">Impact Tracking</h3>
-                                    <p class="text-sm text-gray-600">Visualize your giving journey over time</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-4">
-                                <div class="w-10 h-10 rounded-lg gradient-brand flex items-center justify-center flex-shrink-0 mt-1">
-                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/></svg>
-                                </div>
-                                <div>
-                                    <h3 class="font-semibold text-gray-900">Community Connection</h3>
-                                    <p class="text-sm text-gray-600">Connect with fellow changemakers</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <main class="flex-grow flex flex-col items-center justify-center text-center px-4 relative overflow-hidden">
+        
+        <!-- Animated Background Elements -->
+        <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
+        <div class="absolute top-1/3 right-1/4 w-64 h-64 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div class="absolute -bottom-8 left-1/3 w-64 h-64 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
 
-    <!-- Features Section -->
-    <section id="features" class="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
-        <div class="max-w-6xl mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold mb-4 hero-text">Why DonateKudos?</h2>
-                <p class="text-xl text-gray-600">Everything you need to share your giving story</p>
-            </div>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition">
-                    <div class="w-12 h-12 gradient-brand rounded-lg flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-gray-900">Bank-Level Security</h3>
-                    <p class="text-gray-600">Two-factor authentication with TOTP ensures your profile is protected with military-grade encryption.</p>
-                </div>
-                <div class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition">
-                    <div class="w-12 h-12 gradient-brand rounded-lg flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 107.753 1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z"/></svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-gray-900">Media Gallery</h3>
-                    <p class="text-gray-600">Upload photos from your charitable events and showcase your impact with a beautiful gallery interface.</p>
-                </div>
-                <div class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition">
-                    <div class="w-12 h-12 gradient-brand rounded-lg flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H7a1 1 0 01-1-1v-6z" clip-rule="evenodd"/></svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-gray-900">Data Export</h3>
-                    <p class="text-gray-600">Export your profile data to XML format anytime. Your data, your control - complete transparency.</p>
-                </div>
-                <div class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition">
-                    <div class="w-12 h-12 gradient-brand rounded-lg flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/></svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-gray-900">Community</h3>
-                    <p class="text-gray-600">Discover and connect with other donors, amplify your impact, and build meaningful relationships.</p>
-                </div>
-                <div class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition">
-                    <div class="w-12 h-12 gradient-brand rounded-lg flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.914 6.025a1 1 0 00-1.828 1.05c.07.119.17.235.283.336l7.753 6.936 7.753-6.936c.113-.1.213-.217.283-.336a1 1 0 10-1.828-1.05l-6.43 5.739-6.984-6.403z" clip-rule="evenodd"/></svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-gray-900">Rich Profiles</h3>
-                    <p class="text-gray-600">Add bio, contact info, social links, and wallet addresses to create a comprehensive donor profile.</p>
-                </div>
-                <div class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition">
-                    <div class="w-12 h-12 gradient-brand rounded-lg flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM15.657 14.243a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM11 17a1 1 0 102 0v-1a1 1 0 10-2 0v1zM5.757 15.657a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM4 11a1 1 0 01-1-1 1 1 0 110-2h1a1 1 0 011 1 1 1 0 01-1 1zM5.757 5.757a1 1 0 000-1.414L5.05 3.636a1 1 0 10-1.414 1.414l.707.707z"/></svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-gray-900">Admin Dashboard</h3>
-                    <p class="text-gray-600">Admins can manage users, track statistics, and maintain data integrity across the platform.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+        <div class="z-10 max-w-4xl mx-auto">
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight leading-tight">
+                Your Profile, <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 anime-title">
+                    Reimagined.
+                </span>
+            </h1>
+            
+            <p class="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+                Create a stunning, animated personal page in seconds. Choose your vibe: Techy, Artsy, or Monochrome. Show off your best moments.
+            </p>
 
-    <!-- How It Works -->
-    <section id="how-it-works" class="py-20 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-6xl mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold mb-4 hero-text">How It Works</h2>
-                <p class="text-xl text-gray-600">Get started in just 3 simple steps</p>
-            </div>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="relative">
-                    <div class="flex flex-col items-center">
-                        <div class="w-16 h-16 gradient-brand rounded-full flex items-center justify-center mb-6 text-white text-2xl font-bold">1</div>
-                        <h3 class="text-xl font-bold mb-3 text-center">Create Account</h3>
-                        <p class="text-gray-600 text-center">Sign up with your email and create a secure password</p>
-                    </div>
-                </div>
-                <div class="relative">
-                    <div class="flex flex-col items-center">
-                        <div class="w-16 h-16 gradient-brand rounded-full flex items-center justify-center mb-6 text-white text-2xl font-bold">2</div>
-                        <h3 class="text-xl font-bold mb-3 text-center">Set Up 2FA</h3>
-                        <p class="text-gray-600 text-center">Secure your account with two-factor authentication</p>
-                    </div>
-                </div>
-                <div class="relative">
-                    <div class="flex flex-col items-center">
-                        <div class="w-16 h-16 gradient-brand rounded-full flex items-center justify-center mb-6 text-white text-2xl font-bold">3</div>
-                        <h3 class="text-xl font-bold mb-3 text-center">Build Profile</h3>
-                        <p class="text-gray-600 text-center">Add your story, photos, and share your impact</p>
-                    </div>
-                </div>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="{{ route('register') }}" class="px-8 py-4 rounded-full bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-bold text-lg shadow-lg transform hover:scale-105 transition duration-300">
+                    Create Your Page
+                </a>
+                <a href="#features" class="px-8 py-4 rounded-full border border-gray-600 hover:border-gray-400 text-gray-300 hover:text-white font-semibold text-lg transition duration-300">
+                    Learn More
+                </a>
             </div>
         </div>
-    </section>
 
-    <!-- CTA Section -->
-    <section class="py-20 px-4 sm:px-6 lg:px-8 gradient-brand text-white">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-4xl font-bold mb-6">Ready to Make Your Impact?</h2>
-            <p class="text-xl mb-10 opacity-90">Join hundreds of donors sharing their stories and inspiring change</p>
-            @auth
-                <a href="{{ route('profile.edit') }}" class="inline-block px-8 py-4 bg-white text-purple-600 rounded-lg font-semibold hover:bg-gray-100 transition">Complete Your Profile</a>
-            @else
-                <a href="{{ route('register') }}" class="inline-block px-8 py-4 bg-white text-purple-600 rounded-lg font-semibold hover:bg-gray-100 transition">Create Your Profile Now</a>
-            @endauth
-        </div>
-    </section>
+        <!-- Mockup Cards -->
+        <div class="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto perspective-1000">
+            <div class="floating-card bg-gray-800/50 backdrop-blur-md p-4 rounded-xl border border-gray-700 transform rotate-y-12 hover:rotate-0 transition duration-500">
+                <div class="h-40 bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg mb-4 flex items-center justify-center border border-green-500/30">
+                    <span class="text-green-400 font-mono">&lt;Techy /&gt;</span>
+                </div>
+                <div class="h-4 w-3/4 bg-gray-700 rounded mb-2"></div>
+                <div class="h-4 w-1/2 bg-gray-700 rounded"></div>
+            </div>
+            
+            <div class="floating-card bg-gray-800/50 backdrop-blur-md p-4 rounded-xl border border-gray-700 transform -translate-y-12 z-20 shadow-2xl shadow-purple-500/20">
+                <div class="h-40 bg-gradient-to-br from-pink-200 to-purple-200 rounded-lg mb-4 flex items-center justify-center">
+                    <span class="text-purple-600 font-serif italic text-2xl">Artsy</span>
+                </div>
+                <div class="h-4 w-3/4 bg-gray-700 rounded mb-2"></div>
+                <div class="h-4 w-1/2 bg-gray-700 rounded"></div>
+            </div>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-400 py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-6xl mx-auto">
-            <div class="grid md:grid-cols-4 gap-8 mb-8">
-                <div>
-                    <div class="flex items-center gap-2 mb-4">
-                        <div class="w-10 h-10 rounded-lg gradient-brand flex items-center justify-center">
-                            <span class="text-white font-bold">DK</span>
-                        </div>
-                        <span class="text-white font-bold text-lg">DonateKudos</span>
-                    </div>
-                    <p class="text-sm">Share your impact, inspire change, build community.</p>
+            <div class="floating-card bg-gray-800/50 backdrop-blur-md p-4 rounded-xl border border-gray-700 transform -rotate-y-12 hover:rotate-0 transition duration-500">
+                <div class="h-40 bg-white rounded-lg mb-4 flex items-center justify-center border border-gray-200">
+                    <span class="text-black font-bold tracking-widest uppercase">Mono</span>
                 </div>
-                <div>
-                    <h4 class="text-white font-semibold mb-4">Product</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="#features" class="hover:text-purple-400 transition">Features</a></li>
-                        <li><a href="#how-it-works" class="hover:text-purple-400 transition">How It Works</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-white font-semibold mb-4">Account</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="{{ route('login') }}" class="hover:text-purple-400 transition">Login</a></li>
-                        <li><a href="{{ route('register') }}" class="hover:text-purple-400 transition">Register</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-white font-semibold mb-4">Admin</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="{{ route('admin.login') }}" class="hover:text-purple-400 transition">Admin Portal</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="border-t border-gray-800 pt-8 text-center text-sm">
-                <p>&copy; 2025 DonateKudos. Inspiring change through transparency and community.</p>
+                <div class="h-4 w-3/4 bg-gray-700 rounded mb-2"></div>
+                <div class="h-4 w-1/2 bg-gray-700 rounded"></div>
             </div>
         </div>
+
+    </main>
+
+    <footer class="py-8 text-center text-gray-500 text-sm">
+        &copy; {{ date('Y') }} DonateKudos. All rights reserved.
     </footer>
+
+    <script>
+        // Simple entrance animation
+        anime({
+            targets: '.anime-title',
+            opacity: [0, 1],
+            translateY: [20, 0],
+            easing: 'easeOutExpo',
+            duration: 1500,
+            delay: 500
+        });
+    </script>
 </body>
 </html>

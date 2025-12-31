@@ -1,65 +1,37 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublicProfileController;
 use App\Http\Controllers\AdminController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-})->name('home');
-
-// Authentication Routes
-Route::prefix('auth')->group(function () {
-    // Registration
-    Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-    Route::post('register', [RegisterController::class, 'register']);
-    Route::get('totp-setup', [RegisterController::class, 'showTotpSetup'])->name('auth.totp-setup');
-    Route::post('totp-confirm', [RegisterController::class, 'confirmTotp'])->name('auth.totp-confirm');
-
-    // Login
-    Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
-    Route::post('login', [LoginController::class, 'login']);
-    Route::get('verify-totp', [LoginController::class, 'showTotpVerification'])->name('auth.verify-totp');
-    Route::post('verify-totp', [LoginController::class, 'verifyTotp']);
-    Route::post('logout', [LoginController::class, 'logout'])->name('logout');
-
-    // Password Reset
-    Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-    Route::post('password/reset', [ForgotPasswordController::class, 'sendResetLinkEmail']);
-    Route::get('password/reset/otp', [ForgotPasswordController::class, 'showOtpForm'])->name('password.reset.otp');
-    Route::post('password/reset/otp/verify', [ForgotPasswordController::class, 'verifyOtp'])->name('password.reset.otp.verify');
-    Route::get('password/reset/form', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset.form');
-    Route::post('password/reset/confirm', [ForgotPasswordController::class, 'reset'])->name('password.reset.confirm');
-    Route::get('password/reset/done', [ForgotPasswordController::class, 'showResetDone'])->name('password.reset.done');
 });
 
-// Profile Routes
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
 Route::middleware('auth')->group(function () {
-    Route::prefix('profile')->group(function () {
-        Route::get('/', [ProfileController::class, 'index'])->name('profile.index');
-        Route::get('edit', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::put('/', [ProfileController::class, 'update'])->name('profile.update');
-        Route::delete('/', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    });
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Public Profile Editing
+    Route::get('/my-page', [PublicProfileController::class, 'edit'])->name('public_profile.edit');
+    Route::put('/my-page', [PublicProfileController::class, 'update'])->name('public_profile.update')->middleware('throttle:10,1');
+    Route::post('/my-page/image', [PublicProfileController::class, 'uploadImage'])->name('public_profile.image.upload')->middleware('throttle:5,1');
+    Route::delete('/my-page/image/{id}', [PublicProfileController::class, 'deleteImage'])->name('public_profile.image.delete')->middleware('throttle:10,1');
 });
 
-// Public Profile Routes
-Route::get('profile/{username}', [ProfileController::class, 'show'])->name('profile.show');
-
-// Admin Routes
-Route::prefix('admin')->group(function () {
-    Route::get('/', [AdminController::class, 'showLoginForm'])->name('admin.login');
-    Route::post('login', [AdminController::class, 'login'])->name('admin.login.post');
-    
-    Route::middleware('auth:admin')->group(function () {
-        Route::get('dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-        Route::get('users', [AdminController::class, 'users'])->name('admin.users');
-        Route::get('users/{user}/export/xml', [AdminController::class, 'exportUserXml'])->name('admin.export-xml');
-        Route::get('deleted-users', [AdminController::class, 'deletedUsers'])->name('admin.deleted-users');
-        Route::post('logout', [AdminController::class, 'logout'])->name('admin.logout');
-    });
+Route::middleware(['auth', 'can:admin'])->group(function () {
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::delete('/admin/user/{id}', [AdminController::class, 'deleteUser'])->name('admin.user.delete');
 });
 
+// Auth routes must be loaded before catch-all route
+require __DIR__.'/auth.php';
+
+// Public View - Catch-all route (must be last)
+Route::get('/{slug}', [PublicProfileController::class, 'show'])->name('public_profile.show');
